@@ -127,6 +127,21 @@ class CodeController {
       })
     }
   }
+
+  async index({response, auth}){
+    const user = await auth.getUser()
+    const codes = await Database.select('id', 'title').from('codes').where('users_id', user.id)
+    try{
+      codes[0].title
+      response.status(200)
+      return response.send(codes)
+    }catch (eror){
+      response.status(200)
+      return response.send({
+        message: 'Você ainda não possui códigos !'
+      })
+    }
+  }
 }
 
 module.exports = CodeController

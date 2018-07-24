@@ -22,3 +22,4 @@ Route.post('/code/store', 'CodeController.store').middleware('auth').formats(['j
 Route.get('/code/:id', 'CodeController.show').middleware('auth').formats(['json'])
 Route.delete('/code/:id/delete', 'CodeController.delete').middleware('auth').formats(['json'])
 Route.put('/code/:id/update', 'CodeController.update').middleware('auth').formats(['json'])
+Route.get('/codes', 'CodeController.index').middleware('auth').formats(['json'])

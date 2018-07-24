@@ -78,6 +78,52 @@ class CodeController {
       })
     }
   }
+
+
+  async update({params, response, request, auth}){
+    if(!params.id){
+      response.status(401)
+      return response.send({
+        message: 'Informe o ID do código !'
+      })
+    }
+    const user = await auth.getUser()
+    const data = {
+      title: request.input('title'),
+      body: request.input('body'),
+      language: request.input('language'),
+      users_id: user.id
+    }
+    const rules = {
+      title: 'required',
+      body: 'required',
+      language: 'required',
+    }
+    const validation = await validate(data, rules)
+    if(validation.fails()){
+      response.status(401)
+      return response.send({
+        message: validation.messages()
+      })
+    }
+    const code = await Database.from('codes').where('id', params.id).update({
+      title: data.title,
+      body: data.body,
+      language: data.language,
+      users_id: data.users_id
+    })
+    if(code > 0 ){
+      response.status(200)
+      return response.send({
+        message: 'Gambiarra arrumada =)'
+      })
+    }else{
+      response.status(401)
+      return response.send({
+        message: 'Eitcha, não achei .-.'
+      })
+    }
+  }
 }
 
 module.exports = CodeController

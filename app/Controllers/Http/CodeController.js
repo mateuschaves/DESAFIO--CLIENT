@@ -36,18 +36,20 @@ class CodeController {
   }
 
   async show({params, response, auth}){
+    const user = await auth.getUser()
     if(params.id){
-        const code = await Database.from('codes').where('id', params.id)
-        if(code.body == 'undefined'){
+        const code = await Database.from('codes').where('id', params.id).where('users_id', user.id).first()
+        try{
+            code.body
             response.status(200)
             return response.send({
               code: code
             })
-          }else{
-          response.status(401)
-          return response.send({
-            message: 'Eitcha, não achei .-.'
-          })
+          }catch (error){
+            response.status(401)
+            return response.send({
+              message: 'Eitcha, não achei .-.'
+            })
         }
     }else{
       response.status(401)
@@ -57,9 +59,10 @@ class CodeController {
     }
   }
 
-  async delete({params, response}){
+  async delete({params, response, auth}){
+    const user = await auth.getUser()
     if(params.id){
-      const code = await Database.from('codes').where('id', params.id).del()
+      const code = await Database.from('codes').where('id', params.id).where('users_id', user.id).del()
       if(code){
         response.status(200)
         return response.send({
@@ -106,7 +109,7 @@ class CodeController {
         message: validation.messages()
       })
     }
-    const code = await Database.from('codes').where('id', params.id).update({
+    const code = await Database.from('codes').where('id', params.id).where('users_id', user.id).update({
       title: data.title,
       body: data.body,
       language: data.language,

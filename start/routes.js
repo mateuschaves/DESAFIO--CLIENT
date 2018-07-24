@@ -16,4 +16,8 @@
 const Route = use('Route')
 
 Route.post('/register', 'AuthController.register').formats(['json'])
-Route.post('/auth', 'AuthController.authenticate')
+Route.post('/auth', 'AuthController.authenticate').formats(['json'])
+
+Route.post('/code/store', 'CodeController.store').middleware('auth').formats(['json'])
+Route.get('/code/:id', 'CodeController.show').middleware('auth').formats(['json'])
+Route.delete('/code/:id/delete', 'CodeController.delete').middleware('auth').formats(['json'])
